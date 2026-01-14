@@ -48,7 +48,7 @@ def create_resource_pool_manager(config, roles: list) -> ResourcePoolManager:
     mapping = {}
 
     # Actor/Critic resource pool
-    if any(role in roles for role in [Role.Actor, Role.Critic, Role.RefPolicy, Role.RewardModel]):
+    if any(role in roles for role in [Role.Actor, Role.Critic, Role.RefPolicy]):
         assert config.trainer.n_gpus_per_node > 0, "config.trainer.n_gpus_per_node must be greater than 0"
         assert config.trainer.nnodes > 0, "config.trainer.nnodes must be greater than 0"
 
@@ -56,7 +56,7 @@ def create_resource_pool_manager(config, roles: list) -> ResourcePoolManager:
         resource_pool_spec["trainer_pool"] = trainer_pool
 
         # Map training-related roles to the same resource pool
-        for role in [Role.Actor, Role.Critic, Role.RefPolicy, Role.RewardModel]:
+        for role in [Role.Actor, Role.Critic, Role.RefPolicy]:
             if role in roles:
                 mapping[role] = "trainer_pool"
 
