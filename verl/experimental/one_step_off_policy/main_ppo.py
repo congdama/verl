@@ -69,6 +69,15 @@ def create_resource_pool_manager(config, roles: list) -> ResourcePoolManager:
         resource_pool_spec["rollout_pool"] = rollout_pool
         mapping[Role.Rollout] = "rollout_pool"
 
+    # reward_model resource pool
+    if Role.RewardModel in roles:
+        assert config.reward_model.n_gpus_per_node > 0, "config.reward_model.n_gpus_per_node must be greater than 0"
+        assert config.reward_model.nnodes > 0, "config.reward_model.nnodes must be greater than 0"
+
+        rm_pool = [config.reward_model.n_gpus_per_node] * config.reward_model.nnodes
+        resource_pool_spec["rm_pool"] = rm_pool
+        mapping[Role.RewardModel] = "rm_pool"
+
     return ResourcePoolManager(resource_pool_spec=resource_pool_spec, mapping=mapping)
 
 
@@ -229,6 +238,10 @@ def main(config):
 
     run_ppo(config, task_runner_class=OneStepTaskRunner)
     print(f"total time: {time() - start_time:.2f} seconds")
+
+
+if __name__ == "__main__":
+    main()
 
 
 if __name__ == "__main__":
